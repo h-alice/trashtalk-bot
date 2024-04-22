@@ -99,7 +99,11 @@ class PromptCrafter:
             self.prompt_template = PROMPT_FORMAT[model_type.lower()] # Apply `lower` to make it case-insensitive.
         except KeyError:
             raise ValueError(f"Model type {model_type} is not supported.")
-        
+    
+    @classmethod
+    def new_prompt_crafter(cls, model_type="gemma") -> 'PromptCrafter':
+        return cls(model_type=model_type)
+
     def __str__(self) -> str:
         return self.current_prompt
         
