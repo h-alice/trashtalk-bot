@@ -9,8 +9,13 @@ from typing import NamedTuple, List, Iterator
 # LLamaCpp is a C++ implementation of LLM, which can be run in local machine.
 from langchain_community.llms import LlamaCpp
 
-# HuggingfaceTextGenInference is a handy wrapper for Huggingface's text generation API.
-from langchain_community.llms.huggingface_text_gen_inference import HuggingfaceTextGenInference 
+# We may not need HuggingfaceTextGenInference, therefore we make a try-except block.
+try:
+    # HuggingfaceTextGenInference is a handy wrapper for Huggingface's text generation API.
+    from langchain_community.llms.huggingface_text_gen_inference import HuggingfaceTextGenInference
+    USE_HUGGINGFACE_TEXT_GEN = True
+except ImportError:
+    USE_HUGGINGFACE_TEXT_GEN = False
 
 from langchain_core.language_models.llms import LLM
 
@@ -104,6 +109,7 @@ class LlmConnector(abc.ABC):
         
         # Stream the result.
         model_output = "" # Placeholder for the model output.
+        
         for token in llm_streamer:
             model_output += token
             yield token
@@ -112,7 +118,6 @@ class LlmConnector(abc.ABC):
         final_output = prompt_crafter.finish_prompt(model_output)
         self.store_history(prompt_crafter)
 
-        raise StopIteration
 class LlmConnectorLlamacpp(LlmConnector):
     """
     ## LLM Connector for LLamaCpp
@@ -136,5 +141,9 @@ class LlmConnectorLlamacpp(LlmConnector):
             max_tokens=max_tokens,
             n_ctx=max_tokens,   # NOTE: Not tested, if output still got truncated, try to increase this.
         )
+
+    @classmethod
+    def new_llm_connector(cls, model_name: str, model_path: str, verbose: bool = False, max_tokens: int = 2048) -> 'LlmConnectorLlamacpp':
+        return cls(model_name=model_name, model_path=model_path, verbose=verbose, max_tokens=max_tokens)
 
 

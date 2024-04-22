@@ -10,11 +10,11 @@ from .common import LlmNames
 
 # Some prompt templates.
 PROMPT_FORMAT = {
-    LlmNames.LLAMA: {
+    LlmNames.LLAMA.value: {
         "prompt": "<s>[INST] <<SYS>>\n{sys}\n<</SYS>>\n{full_user_prompt} [/INST]\n{model}\n",
         "after_generation": ""
     },
-    LlmNames.GEMMA: {
+    LlmNames.GEMMA.value: {
         "prompt": "<start_of_turn>user\n{full_user_prompt}<end_of_turn>\n<start_of_turn>model\n{model}",
         "after_generation": "<end_of_turn>\n"
     },
