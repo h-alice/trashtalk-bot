@@ -13,7 +13,7 @@ PROMPT_FORMAT = {
         "after_generation": ""
     },
     "gemma": {
-        "prompt": "<start_of_turn>user\n{full_user_prompt}<end_of_turn>\n<start_of_turn>model\n{model}",
+        "prompt": "<start_of_turn>user\n{full_user_prompt}<end_of_turn>\n<start_of_turn>model\n{model}\n",
         "after_generation": "<end_of_turn>\n"
     },
 }
