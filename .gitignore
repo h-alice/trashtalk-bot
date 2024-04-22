@@ -6,3 +6,6 @@ wheels
 
 # Virtual Environment.
 .venv
+
+# Python cache.
+__pycache__
