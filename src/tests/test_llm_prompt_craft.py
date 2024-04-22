@@ -1,7 +1,7 @@
 import sys
 import unittest
 import logging
-from core.llm_connector import PromptCrafter
+from core.llm_prompt_crafter import PromptCrafter
 
 GEMMA_PROMPT = """<start_of_turn>user
 {full_user_prompt}<end_of_turn>

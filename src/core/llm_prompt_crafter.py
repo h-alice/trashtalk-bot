@@ -63,31 +63,6 @@ class LlmGenerationParameters(NamedTuple):
                    temperature=temperature, 
                    repetition_penalty=repetition_penalty)
 
-#
-def llm_stream_result(llm: LLM, prompt: str, llm_parameter: LlmGenerationParameters) -> Iterator[str]:
-    """
-    # Streaming Result from Language Model
-    This function streams the result from the language model.
-
-    The return is an iterator of strings, which return the result, one token at a time, until the completion of the generation.
-
-    It's very useful if you want to display the result in a streaming fashion, like the chatbot is actually typing the response.
-
-    Parameters:
-    - llm: LLM, The language model instance.
-    - prompt: str, The prompt to generate the response. It should be in the proper prompt format which the language model can understand.
-    - llm_parameter: LlmGenerationParameters, The generation parameters for the language model.
-    """
-    return llm.stream(
-        prompt,
-        top_k=llm_parameter.top_k,
-        top_p=llm_parameter.top_p,
-        temperature=llm_parameter.temperature,
-        repeat_penalty=llm_parameter.repetition_penalty,
-        max_tokens=llm_parameter.max_new_tokens,
-        )
-
-
 class PromptCrafter:
     def __init__(self, model_type="gemma"):
         self.model_type = model_type
