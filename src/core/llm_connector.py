@@ -147,7 +147,7 @@ class PromptCrafter:
 
         return self.current_prompt.format(model="") # Return the prompt with the model placeholder replaced by empty string.
     
-    def finish_prompt(self, model_response):
+    def finish_prompt(self, model_response) -> str:
         """
         ## Finish Prompt with Model Response
         This method finishes the prompt with the model response.
