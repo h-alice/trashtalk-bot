@@ -5,14 +5,16 @@ from typing import NamedTuple, List, Iterator
 from langchain_core.documents.base import Document
 from langchain_core.language_models.llms import LLM
 
+from .common import LlmNames
+
 
 # Some prompt templates.
 PROMPT_FORMAT = {
-    "llama": {
+    LlmNames.LLAMA: {
         "prompt": "<s>[INST] <<SYS>>\n{sys}\n<</SYS>>\n{full_user_prompt} [/INST]\n{model}\n",
         "after_generation": ""
     },
-    "gemma": {
+    LlmNames.GEMMA: {
         "prompt": "<start_of_turn>user\n{full_user_prompt}<end_of_turn>\n<start_of_turn>model\n{model}",
         "after_generation": "<end_of_turn>\n"
     },
@@ -32,36 +34,6 @@ If there is nothing in the context relevant to the question at hand, just resuse
 Anything between the following `context` html blocks is retrieved from a knowledge bank, not part of the conversation with the user. 
 
 """
-
-# This is a named tuple for the LLM generation parameters.
-# It's a way to pass parameters to the LLM generation function. And included some most common parameters.
-#
-# 
-class LlmGenerationParameters(NamedTuple):
-    """
-    # LLM Generation Parameters
-    This is a named tuple for the LLM generation parameters. And provides a way to pass parameters to the LLM generating function.
-
-    Some mostly used parameters are included in this named tuple, with recommended default values.
-    Parameters:
-    - max_new_tokens: int, The upper limit of the number of tokens to generate.
-    - top_k: int, The number of top tokens to sample from.
-    - top_p: float, The cumulative probability of the top tokens to sample from. Lower value means more precise output.
-    - temperature: float, The randomness of the output. Lower value means more precise output.
-    - repetition_penalty: float, The penalty for repeating tokens in the output.
-    """
-    max_new_tokens: int
-    top_k: int
-    top_p: float
-    temperature: float
-    repetition_penalty: float
-    @classmethod
-    def new_generation_parameter(cls, max_new_tokens=1024, top_k=10, top_p=0.9, temperature=0.1, repetition_penalty=1.3) -> 'LlmGenerationParameters':
-        return cls(max_new_tokens=max_new_tokens,
-                   top_k=top_k, 
-                   top_p=top_p, 
-                   temperature=temperature, 
-                   repetition_penalty=repetition_penalty)
 
 class PromptCrafter:
     def __init__(self, model_type="gemma"):
