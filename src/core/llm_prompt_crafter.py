@@ -105,39 +105,3 @@ class PromptCrafter:
         self.current_prompt += self.prompt_template["after_generation"] # Add the after generation part.
         self.flag_is_finished = True # Set the flag to finished.
         return self.current_prompt
-
-    
-"""
-def craft_prompt(user_input, model_type="gemma", rag_content: List[Document]=[], keep_placeholder=False):
-
-    # Get the prompt format.
-    try:
-        prompt_template = PROMPT_TEMPLATE[model_type]
-    except KeyError:
-        raise ValueError(f"Model type {model_type} is not supported.")
-
-    prompt = PromptTemplate(
-        input_variables=["full_user"],
-        template=prompt_template["prompt"],
-        partial_variables={"model": ""},
-        )
-    # Prompt crafting.
-    # user_prompt = prompt.partial(sys=SAMPLE_SYS_PROMPT)  # TODO: User defined system prompt.
-    user_prompt = prompt
-
-    # if rag_content:
-    if False:
-        rag_documents = "\n".join([x.page_content for x in rag_content])
-        rag_prompt = RAG_STEM + f"<context>\n{rag_documents}\n</context>\n"
-        user_prompt = user_prompt.partial(rag=rag_prompt)
-        
-    if keep_placeholder:
-        prompt = user_prompt.partial(user=user_input) 
-    else:
-        prompt = user_prompt.format(user=user_input)
-
-    return prompt
-
-def craft_result_with_prompt(user_input, model_response):
-    return craft_prompt(user_input, keep_placeholder=True).format(model=model_response)
-    """
