@@ -118,6 +118,16 @@ class LlmConnector(abc.ABC):
         final_output = prompt_crafter.finish_prompt(model_output)
         self.store_history(prompt_crafter)
 
+    def get_last_result(self) -> str:
+        """
+        ## Get Last Result
+        Get the last result from the language model.
+        """
+        if not self.history:
+            raise ValueError("No history found.") 
+        
+        return self.history[-1].get_model_response()
+
 class LlmConnectorLlamacpp(LlmConnector):
     """
     ## LLM Connector for LLamaCpp

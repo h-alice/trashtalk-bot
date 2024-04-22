@@ -42,6 +42,7 @@ class PromptCrafter:
         self.user_input = ""
         self.rag_content = ""  # Note that this is the flattened content of the RAG documents.
         self.current_prompt = "" # The current prompt.
+        self.model_response = "" # The model response.
         try:
             self.prompt_template = PROMPT_FORMAT[model_type.lower()] # Apply `lower` to make it case-insensitive.
         except KeyError:
@@ -104,4 +105,15 @@ class PromptCrafter:
         self.current_prompt = self.current_prompt.format(model=model_response) # Replace the `{model}` placeholder with the model response.
         self.current_prompt += self.prompt_template["after_generation"] # Add the after generation part.
         self.flag_is_finished = True # Set the flag to finished.
+        self.model_response = model_response
         return self.current_prompt
+    
+    def get_model_response(self):
+        """
+        ## Get Model Response
+        Get the model response from the prompt.
+        """
+        if not self.flag_is_finished:
+            raise ValueError("The prompt is not finished yet.")
+        
+        return self.model_response
