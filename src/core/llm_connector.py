@@ -168,11 +168,13 @@ class LlmConnectorHuggingface(LlmConnector):
     ## LLM Connector for Huggingface
     Connect to Huggingface model.
 
+    It may be a running docker container or a remote server.
+
     Parameters:
-    - model_name: str, The name of the model (e.g. gpt2).
-    - model_path: str, The path to the model.
-    - verbose: bool, Whether to output verbose information. Should be false since it outputs REALLY a lot of information.
+    - model_name: str, The name of the model (e.g. llama).
+    - model_endpoint: str, The endpoint of the model.
     - max_tokens: int, The maximum number of tokens to generate. Increase this if the output is truncated.
+
     """
     def __init__(self, model_name: str, model_endpoint: str, max_tokens: int = 2048):
 
