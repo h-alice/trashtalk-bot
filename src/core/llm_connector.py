@@ -6,13 +6,18 @@ import abc
 
 from typing import NamedTuple, List, Iterator
 
-# LLamaCpp is a C++ implementation of LLM, which can be run in local machine.
-from langchain_community.llms import LlamaCpp
+# We may not need LlamaCpp, therefore we make a try-except block.
+try:
+    # LLamaCpp is a C++ implementation of LLM, which can be run in local machine.
+    from langchain_community.llms import LlamaCpp
+    USE_LLAMACPP = True
+except ImportError:
+    USE_LLAMACPP = False
 
 # We may not need HuggingfaceTextGenInference, therefore we make a try-except block.
 try:
     # HuggingfaceTextGenInference is a handy wrapper for Huggingface's text generation API.
-    from langchain_community.llms.huggingface_text_gen_inference import HuggingfaceTextGenInference
+    from langchain_community.llms.huggingface_text_gen_inference import HuggingFaceTextGenInference
     USE_HUGGINGFACE_TEXT_GEN = True
 except ImportError:
     USE_HUGGINGFACE_TEXT_GEN = False
@@ -20,9 +25,8 @@ except ImportError:
 from langchain_core.language_models.llms import LLM
 
 from .llm_prompt_crafter import PromptCrafter
+from .common import LlmNames, ModelProviders
 
-# Constants
-MODEL_PROVIDER_LLAMACPP = "llamacpp"
 
 
 # This is a named tuple for the LLM generation parameters.
@@ -142,8 +146,11 @@ class LlmConnectorLlamacpp(LlmConnector):
     def __init__(self, model_name: str, model_path: str, verbose: bool = False, max_tokens: int = 2048):
 
         # Call the parent class constructor
-        super().__init__(model_provider=MODEL_PROVIDER_LLAMACPP, model_name=model_name)
+        super().__init__(model_provider=ModelProviders.LLAMACPP, model_name=model_name)
 
+        if not USE_LLAMACPP:
+            raise ValueError("LLamaCpp is not available. Please install the required package.")
+        
         # Ensure we only need to load the model once.
         self.llm_instance = LlamaCpp(
             model_path=model_path,
@@ -155,5 +162,33 @@ class LlmConnectorLlamacpp(LlmConnector):
     @classmethod
     def new_llm_connector(cls, model_name: str, model_path: str, verbose: bool = False, max_tokens: int = 2048) -> 'LlmConnectorLlamacpp':
         return cls(model_name=model_name, model_path=model_path, verbose=verbose, max_tokens=max_tokens)
+    
+class LlmConnectorHuggingface(LlmConnector):
+    """
+    ## LLM Connector for Huggingface
+    Connect to Huggingface model.
 
+    Parameters:
+    - model_name: str, The name of the model (e.g. gpt2).
+    - model_path: str, The path to the model.
+    - verbose: bool, Whether to output verbose information. Should be false since it outputs REALLY a lot of information.
+    - max_tokens: int, The maximum number of tokens to generate. Increase this if the output is truncated.
+    """
+    def __init__(self, model_name: str, model_endpoint: str, max_tokens: int = 2048):
+
+        # Call the parent class constructor
+        super().__init__(model_provider=ModelProviders.HUGGINGFACE, model_name=model_name)
+
+        if not USE_HUGGINGFACE_TEXT_GEN:
+            raise ValueError("Huggingface text generation is not available. Please install the required package.")
+
+        # Ensure we only need to load the model once.
+        self.llm_instance = HuggingFaceTextGenInference(
+            inference_server_url=model_endpoint,
+            max_new_tokens=max_tokens,
+        )    
+
+    @classmethod
+    def new_llm_connector(cls, model_name: str, model_endpoint: str, max_tokens: int = 2048) -> 'LlmConnectorHuggingface':
+        return cls(model_name=model_name, model_endpoint=model_endpoint, max_tokens=max_tokens)
 
