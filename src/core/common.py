@@ -9,3 +9,12 @@ class LlmNames(enum.Enum):
     """
     GEMMA = "gemma"
     LLAMA = "llama"
+
+class ModelProviders(enum.Enum):
+    """
+    # Model Providers
+    This is an enumeration of the model providers.
+    """
+    LLAMACPP = "llamacpp"
+    HUGGINGFACE = "huggingface"
+    
