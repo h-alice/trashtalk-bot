@@ -1,2 +1,11 @@
+# Local IDE files.
+.vscode
+
 # Local wheels.
 wheels
+
+# Virtual Environment.
+.venv
+
+# Python cache.
+__pycache__
