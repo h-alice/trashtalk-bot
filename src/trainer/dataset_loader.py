@@ -80,5 +80,6 @@ def convert_message_stack_to_training_promots(message_stacks: List[List[str]]) -
 if __name__ == "__main__": # For test.
     # Load dataset.
     dataset = load_dataset("h-alice/chat-cooking-master-boy-100k", split="train")
-    print(create_message_stack(dataset, batch_size=10, stack_size_min=2, stack_size_max=2, even_stack_size=True))
+    print(convert_message_stack_to_training_promots(
+        create_message_stack(dataset, batch_size=10, stack_size_min=2, stack_size_max=2, even_stack_size=True)))
 
