@@ -2,6 +2,7 @@ import random
 from typing import Tuple, List
 from core import PromptCrafter
 from datasets import load_dataset, Dataset
+import logging
 
 def craft_training_prompt(user_input: str, expected_model_output: str) -> str:
     prompt_crafter = PromptCrafter.new_prompt_crafter("gemma")
@@ -20,7 +21,6 @@ def create_random_message_stack_from_adjacent_records(dataset: Dataset, stack_si
     - dataset: Dataset, The dataset.
     - stack_size: int, The size of the stack.
     """
-
     min_message_idx = 0
     max_message_idx = len(dataset['message'])
 
@@ -44,7 +44,6 @@ def create_message_stack(dataset: Dataset, batch_size: int, stack_size_min: int=
     - stack_size_max: int, The maximum size of the stack.
     - even_stack_size: bool, Whether the stack size should be even. Default is True.
     """
-    
     message_stacks = []
     for _ in range(batch_size):
         stack_size = random.randint(stack_size_min, stack_size_max)
@@ -54,12 +53,32 @@ def create_message_stack(dataset: Dataset, batch_size: int, stack_size_min: int=
         message_stacks.append(message_stack)
     return message_stacks
 
+def convert_message_stack_to_training_promots(message_stacks: List[List[str]]) -> List[str]:
+    """
+    ## Convert Message Stack to Training Prompts
+    Convert the message stack to training prompts.
+
+    Parameters:
+    - message_stacks: List[List[str]], The message stacks.
+    """
+    training_prompts = []
+    for message_stack in message_stacks:
+        temp_stacks = []
+
+        # Check if the message stack is even.
+        if len(message_stack) % 2 != 0:
+            logging.warning("The message stack is not even. The last message will be ignored.")
+
+        # Iterate over the message stack.
+        for i in range(0, len(message_stack), 2):
+            temp_stacks.append(craft_training_prompt(message_stack[i], message_stack[i + 1]))
+
+        # Join the message stack to a single string.
+        training_prompts.append("\n".join(temp_stacks))
+    return training_prompts
+
 if __name__ == "__main__": # For test.
     # Load dataset.
     dataset = load_dataset("h-alice/chat-cooking-master-boy-100k", split="train")
-    message_stacks = []
-    for _ in range(10):
-        message_stack = create_random_message_stack_from_adjacent_records(dataset, 2)
-        message_stacks.append(craft_training_prompt(message_stack[0], message_stack[1]))
-    print(message_stacks)
+    print(create_message_stack(dataset, batch_size=10, stack_size_min=2, stack_size_max=2, even_stack_size=True))
 
