@@ -10,6 +10,17 @@ def craft_training_prompt(user_input: str, expected_model_output: str) -> str:
     return str(prompt_crafter)
 
 def create_random_message_stack_from_adjacent_records(dataset: Dataset, stack_size: int) -> List[str]:
+    """
+    ## Create Random Message Stack from Adjacent Records
+    Create a message stack from the dataset by randomly selecting a message index.
+
+    The message stack is created by first selecting a random message index, then selecting the next `stack_size - 1` messages.
+
+    Parameters:
+    - dataset: Dataset, The dataset.
+    - stack_size: int, The size of the stack.
+    """
+
     min_message_idx = 0
     max_message_idx = len(dataset['message'])
 
