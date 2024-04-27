@@ -16,14 +16,14 @@ class TestDatasetLoader(unittest.TestCase):
         # Load dataset.
         self.test_loading_dataset_from_hf()
         # NOTE: This test doesn't have deterministic result. And should be checked by output.
-        print(create_message_stack(self.dataset, batch_size=10, stack_size_min=2, stack_size_max=2, even_stack_size=True))
+        print(create_message_stack(self.dataset, batch_size=10, stack_size_min=2, stack_size_max=2, even_stack_size=True)) # type: ignore
 
     def test_convert_message_stack_to_training_promots(self):
         # Load dataset. 
         self.test_loading_dataset_from_hf()
 
         prompt_list = convert_message_stack_to_training_promots(
-            create_message_stack(self.dataset, batch_size=10, stack_size_min=2, stack_size_max=2, even_stack_size=True))
+            create_message_stack(self.dataset, batch_size=10, stack_size_min=2, stack_size_max=2, even_stack_size=True)) # type: ignore
         
         for prompt in prompt_list:
             print(prompt)
