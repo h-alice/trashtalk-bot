@@ -1,1 +1,6 @@
 langchain
+peft
+transformers
+safetensors
+pandas
+huggingface-hub
