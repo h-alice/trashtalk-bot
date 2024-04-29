@@ -4,7 +4,7 @@ This module manages LLM connection and sessions.
 
 import abc
 
-from typing import NamedTuple, List, Iterator
+from typing import Literal, NamedTuple, List, Iterator
 
 # We may not need LlamaCpp, therefore we make a try-except block.
 try:
@@ -65,7 +65,7 @@ class LlmConnector(abc.ABC):
         self.model_name = model_name
         self.model_provider = model_provider
         self.history: List[PromptCrafter] = []
-        self.llm_instance: LLM = None
+        self.llm_instance: LLM = None # type: ignore
 
     def store_history(self, history: PromptCrafter):
         """
@@ -74,7 +74,10 @@ class LlmConnector(abc.ABC):
         """
         self.history.append(history)
 
-    def llm_stream_result(self, prompt: str, rag_content :list=[], llm_parameter: LlmGenerationParameters=None) -> Iterator[str]:
+    def llm_stream_result(self, 
+                          prompt: str, 
+                          rag_content :list=[], 
+                          llm_parameter: LlmGenerationParameters=None) -> Iterator[str]: # type: ignore
         """
         ## Streaming Result from Language Model
         This method streams the result from the language model.
@@ -146,7 +149,7 @@ class LlmConnectorLlamacpp(LlmConnector):
     def __init__(self, model_name: str, model_path: str, verbose: bool = False, max_tokens: int = 2048):
 
         # Call the parent class constructor
-        super().__init__(model_provider=ModelProviders.LLAMACPP, model_name=model_name)
+        super().__init__(model_provider=str(ModelProviders.LLAMACPP), model_name=model_name)
 
         if not USE_LLAMACPP:
             raise ValueError("LLamaCpp is not available. Please install the required package.")
@@ -179,7 +182,7 @@ class LlmConnectorHuggingface(LlmConnector):
     def __init__(self, model_name: str, model_endpoint: str, max_tokens: int = 2048):
 
         # Call the parent class constructor
-        super().__init__(model_provider=ModelProviders.HUGGINGFACE, model_name=model_name)
+        super().__init__(model_provider=str(ModelProviders.HUGGINGFACE), model_name=model_name)
 
         if not USE_HUGGINGFACE_TEXT_GEN:
             raise ValueError("Huggingface text generation is not available. Please install the required package.")
@@ -188,6 +191,8 @@ class LlmConnectorHuggingface(LlmConnector):
         self.llm_instance = HuggingFaceTextGenInference(
             inference_server_url=model_endpoint,
             max_new_tokens=max_tokens,
+            client=None,
+            async_client=None,
         )    
 
     @classmethod
