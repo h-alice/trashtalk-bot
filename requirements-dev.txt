@@ -6,3 +6,6 @@ safetensors==0.4.3
 pandas==2.2.2
 sentencepiece==0.2.0
 huggingface-hub==0.22.2
+torch==2.3.0
+ipykernel==6.29.4
+ipython==8.23.0
